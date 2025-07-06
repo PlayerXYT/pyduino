@@ -1,13 +1,14 @@
 #!/bin/env python3
 
 try:
-    import serial
+    import serial, serial.tools.list_ports
 except ImportError:
     print("Warning: Module 'serial' not found, attempting install")
     import os
     os.system("pip --isolated -q --no-input --retries 1 install serial")
     try:
-        import serial
+        import serial, serial.tools.list_ports
+
     except ImportError:
         print("Error: Could not import serial, please install it to continue")
         exit()
@@ -17,13 +18,12 @@ INPUT = 1
 INPUT_PULLUP = 2
 
 class Arduino:
-    def __init__(self, port: str, baudrate: int = 9600):
-        self.ser = serial.Serial()
-        self.ser.port = port
-        self.ser.baudrate = baudrate
-        self.ser.timeout = 1
-        self.ser.setDTR(False)
-        self.ser.open()
+    def __init__(self, port: str = None, baudrate: int = 9600):
+        if port is None:
+            port = search()
+        if port is None:
+            raise ValueError("Could not find an arduino plugged in")
+        self.ser = serial.Serial(port=port, timeout=1)
 
     def digitalWrite(self, pin: int, value: bool) -> None:
         self.ser.write(parseCommand(pin, 13 if value else 0))
@@ -48,3 +48,9 @@ class Arduino:
 
 def parseCommand(pin: int, mod: int) -> bytes:
     return chr(pin+mod+31).encode('ASCII')
+
+def search() -> str:
+    ports = serial.tools.list_ports.comports()
+    for i in range(len(ports)):
+        if ports[i].vid == 9025:
+            return ports[i].device
