@@ -29,7 +29,7 @@ class Arduino:
         self.ser.write(parseCommand(pin, 13 if value else 0))
 
     def analogWrite(self, pin: int, value: int) -> None:
-        self.ser.write("{") 
+        self.ser.write("{")
         self.ser.write(chr(value+31).encode('ASCII'))
 
     def pinMode(self, pin: int, value: int) -> None:
