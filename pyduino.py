@@ -62,3 +62,7 @@ def search() -> str:
     for i in range(len(ports)):
         if ports[i].vid == 9025:
             return ports[i].device
+
+# If called directly, find arduino
+if __name__ == "__main__":
+    print(search())
