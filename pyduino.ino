@@ -7,8 +7,6 @@
 #define A_READ 6
 #define A_WRITE 7
 
-//bool t = false;
-
 void setup() {
 	Serial.begin(9600);
 }
@@ -16,15 +14,8 @@ void setup() {
 void loop() {
 	if(Serial.available()) {
 		byte in = Serial.read();
-		//if(in==10) {
-		//	if(t) Serial.println("[EOT]");
-		//	else Serial.println("[EOT]^");
-		//	t = false;
-		//	return;
-		//}
 		in -= 31;
 		byte type = get_type(in);
-		//t = true;
 		while(in>13) in-=13;
 		
 		switch(type) {
