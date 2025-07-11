@@ -1,5 +1,6 @@
 #!/bin/env python3
 
+# Import serial
 try:
     import serial, serial.tools.list_ports
 except ImportError:
@@ -13,10 +14,15 @@ except ImportError:
         print("Error: Could not import serial, please install it to continue")
         exit()
 
+# Constants
 OUTPUT = 0
 INPUT = 1
 INPUT_PULLUP = 2
 
+HIGH = True
+LOW = False
+
+# Arduino wrapper
 class Arduino:
     def __init__(self, port: str = None, baudrate: int = 9600):
         if port is None:
@@ -46,9 +52,11 @@ class Arduino:
     def close(self) -> None:
         self.ser.close()
 
+# Raw I/O for internal use only
 def parseCommand(pin: int, mod: int) -> bytes:
     return chr(pin+mod+31).encode('ASCII')
 
+# Find an arduino by VID
 def search() -> str:
     ports = serial.tools.list_ports.comports()
     for i in range(len(ports)):
